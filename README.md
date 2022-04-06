@@ -7,10 +7,8 @@ An Exploration of Parallelism in Neural Networks
 
 # Summary
 
-For our 15-418 final project, we are looking into potential axes of
-parallelism that exist within neural networks. We will be implementing
-neural networks in both `C++` (via `OpenMP`) and `Python` (via `PyTorch`
-and potentially `mpi4py`, an MPI package for Python) and measuring their
+For our 15-418 final project, we are looking into potential axes of parallelism that exist within neural networks. We will be implementing neural
+networks in `Python` (via `PyTorch` and `mpi4py`, an `MPI` package for `Python`) as well as potentially also via `MPI` in `C++` and measuring their
 performance on CPUs as well as GPUs.
 
 # Background
@@ -91,30 +89,29 @@ data parallelism (e.g. multi core vs single GPU vs multi GPU).
 To make this more concrete, here is the high level sequence of our
 project:
 
-1.  Implement and compare a `C++` version with a `C++/OpenMP` of a very
-    basic model to serve as a reference for speedup and performance
+1. Implement a basic feed forward model in `PyTorch` to serve as a reference for speedup and general performance
 
-2.  Shift to `Python` and begin comparing both basic and complicated
-    models via data and model parallelism
+2. Implement a message-passing model with convolutional neural net base in `mpi4py`
+
+3. (Optional / Time Permits) Add additional `PyTorch` models with varying architectures (e.g. `ResNet`)
+
+4. Start experiments comparing both basic and complicated models via data and model parallelism
 
     -   For data parallelism: experiment with different batch sizes
         (explained below)
 
     -   For model parallelism: experiment with models on multi core vs
         single GPU vs multi GPU
+        
+5. (Optional / Time Permits) Add `C++` implementation with `MPI` and add to above experiments
+
+  
 
 # Resources
 
-Given that we want to explore the differences in axes of parallelism, we
-will try not to spend too much time implementing sequential neural
-networks from scratch. From the `C++` standpoint, there exists an
-abundance of starter code (e.g.
-\[[1](https://github.com/Whiax/NeuralNetworkCpp/tree/master/src/neural),[2](https://github.com/huangzehao/SimpleNeuralNetwork/blob/master/src/neural-net.cpp),[3](https://github.com/arnobastenhof/mnist/tree/master/src)\]).
-
-For `Python`, we will rely upon the `PyTorch` documentation for commonly
-used neural networks (e.g. standard CNN or basic ResNet). *The main
-coding portion (in `C++`) will come from translating a `C++`
-implementation of a neural network into an OpenMP version*.
+Given that we want to explore the differences in axes of parallelism, we will try not to spend too much time implementing sequential neural networks
+from scratch. For `Python`, we will rely upon the `PyTorch` documentation for commonly used neural networks (e.g. standard CNN or basic `ResNet`). *The
+main coding portion (in* `Python + mpi4py`) *will come from incorporating message passing into a* `PyTorch` *based model*
 
 Additionally, there is a very interesting article from folks at Google
 Research[^4] which describes the various scaling patterns that they
@@ -157,21 +154,16 @@ will use the following:
 
 #### PLAN TO ACHIEVE
 
-A successful project would entail a comparison between data and model
-parallelism with respect to speedup as well as performance. This would
-involve having a working implementation of our models in `C++` with and
-without `OpenMP` to be able to comment on performance and speedup in a
-shared memory setting. Then, we shift to our `Python` models and have
-measurements of speedup with respect to both data and model parallelism.
-For an example of a specific metric we may want to look out for, we will
-see if we can achieve the result that doubling batch size (so in the
-data parallel setting) halves the training time.
+A successful project would entail a comparison between data and model parallelism with respect to speedup as well as performance. This would involve
+having a working implementation of our models in `PyTorch` as well as using `mpi4py` to be able to comment on performance and speedup in a message
+passing paradigm. With these models, we will have measurements of speedup with respect to both data and model parallelism. For an example of a specific
+metric we may want to look out for, we will see if we can achieve the result that doubling batch size (so in the data parallel setting) halves the
+training time.
 
 #### HOPE TO ACHIEVE
 
-If everything is going very well and we are able to get all of these
-measurements, we will experiment with also adding a message-passing
-model (via `mpi4py` in `Python`) to our set of models.
+If everything is going very well and we are able to get all of these measurements, we will experiment with also adding other types of neural network
+architectures (e.g. `ResNet`) as well as possibly trying to implement the simple network in `C++` with and without `MPI`.
 
 #### 75%
 
@@ -201,13 +193,10 @@ Our learning objectives are as follows:
 
 # Platform Choice
 
-Given that the majority of this class is focused on `C++`, we want to be
-able to use it (along with `OpenMP`) as a starting point. We also think
-it would be interesting to see a neural network within the shared memory
-context. However, after this initial part (ideally before or right up to
-the milestone report checkpoint), we will fully transition to `Python`,
-taking full advantage of the capabilities of `PyTorch` as a deep
-learning framework.
+Given that the majority of this class is focused on parallelism, we want to incorporate one of the main kinds of parallel settings that we have talked
+about. Specifically, in the context of neural network training, it makes sense to use message passing where we can distribute the training across
+processors. We will have each processor train a copy of the network and then send back the updated weights. Then, we average the weights together
+continue with validation and testing.
 
 As for compute resources, we will be using a combination of AWS EC2,
 PSC-Bridges 2, GHC cluster machines, and potentially other high core
@@ -218,11 +207,11 @@ requirements.
 
 | Week      | Goals |
 | ----------- | ----------- |
-| 3/21 - 3/28 | Project proposal and start working on `C++` implementation       |
-| 3/28 - 4/04 | Finish the `C++` and start translating to `OpenMP` implementation        |
-| 4/04 - 4/11 | Finish the shared memory implementation + Milestone Report and start data parallelism in `Python`        |
+| 3/21 - 3/28 | Project proposal and start working on `PyTorch` implementation of basic network       |
+| 3/28 - 4/04 | Finish the `PyTorch` basic model and start translating to `mpi4py` implementation        |
+| 4/04 - 4/11 | Finish the `mpi4py` implementation + Milestone Report and start data parallelism in Python        |
 | 4/11 - 4/18 | Finish Data Parallelism and start working on Model Parallelism        |
-| 4/18 - 4/25 | Finish Model Parallelism and start collecting performance metrics, potentially also work on `MPI` version        |
+| 4/18 - 4/25 | Finish Model Parallelism + start collecting performance metrics, maybe work on `ResNet` model architecture        |
 | 4/25 - 4/29 | Finish Final Report         |
 
 [^1]: [Data Parallelism VS Model Parallelism in Distributed Deep
