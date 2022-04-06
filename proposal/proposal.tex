@@ -27,7 +27,7 @@ An Exploration of Parallelism in Neural Networks
 
 \section*{Summary}
 
-For our 15-418 final project, we are looking into potential axes of parallelism that exist within neural networks. We will be implementing neural networks in both \texttt{C++} (via \texttt{OpenMP}) and \texttt{Python} (via \texttt{PyTorch} and potentially \texttt{mpi4py}, an MPI package for Python) and measuring their performance on CPUs as well as GPUs.
+For our 15-418 final project, we are looking into potential axes of parallelism that exist within neural networks. We will be implementing neural networks in \texttt{Python} (via \texttt{PyTorch} and \texttt{mpi4py}, an MPI package for Python) as well as potentially also via MPI in \texttt{C++} and measuring their performance on CPUs as well as GPUs.
 
 \section*{Background}
 
@@ -60,24 +60,29 @@ Refer to the figure\footnote{\href{https://xiandong79.github.io/Intro-Distribute
 
 The main challenge stems from the fact that there exist a lot of dependencies when working with a neural network. At the lowest, implementation-detail level, we know that different architectures have different structures and therefore different dependencies between layers (e.g. between input and hidden layers). But we also know that the choice of hyperparameters (e.g. learning rate) and optimizers (e.g. Stochastic Gradient Descent or SGD, Adam, AdaGrad, etc.) heavily influence model convergence time as well as model performance. In addition, we have that the choice of dataset is also significant (and related) to the class of models we use. Finally, we are limited by the choice of compute power, in the sense that we can only measure performance on machines with fixed number of CPU cores as well as fixed numbers of GPUs.\\
 
-Given that we want to focus on parallelism, we do \textit{not} want to get caught up in trying out different models on different datasets with different parameters. Thus, we will fix our dataset to be the widely well-known benchmark MNIST\footnote{\href{http://yann.lecun.com/exdb/mnist/}{Link to MNIST Data}} dataset. This also restricts us to the problem of image classification, where further restricts the class of neural networks that we will be looking at (e.g. now we can focus on simple feed forward networks and basic convolutional neural networks or CNNs). From background research, this dataset is known to be relatively cheap to train and still have nontrivial results without excessive preprocessing of the input data.\\
+Given that we want to focus on parallelism, we do \textit{not} want to get caught up in trying out different models on different datasets with different parameters. Thus, we will fix our dataset to be the widely well-known benchmark MNIST\footnote{\href{http://yann.lecun.com/exdb/mnist/}{Link to MNIST Data}} dataset. This also restricts us to the problem of image classification, which further restricts the class of neural networks that we will be looking at (e.g. now we can focus on simple feed forward networks and basic convolutional neural networks or CNNs). From background research, this dataset is known to be relatively cheap to train and still have nontrivial results without excessive preprocessing of the input data.\\
 
 Then, we're able to focus the ``unknown" aspects of our project to be the axes of parallelism and their corresponding performance or speedups. Specifically, once we have a baseline performance in a shared memory setting, we can transition and aim to look at the difference between data and model parallelism, as well as the specific differences within data parallelism (e.g. multi core vs single GPU vs multi GPU). \\
 
 To make this more concrete, here is the high level sequence of our project:
 
 \begin{enumerate}
-  \item Implement and compare a \texttt{C++} version with a \texttt{C++/OpenMP} of a very basic model to serve as a reference for speedup and performance
-  \item Shift to \texttt{Python} and begin comparing both basic and complicated models via data and model parallelism
+  \item Implement a basic feed forward model in \texttt{PyTorch} to serve as a reference for speedup and general performance
+  \item Implement a message-passing model with convolutional neural net base in \texttt{mpi4py}
+  \item (Optional / Time Permits) Add additional \texttt{PyTorch} models with varying architectures (e.g. \texttt{ResNet})
+  \item Start experiments and comparing both basic and complicated models via data and model parallelism
   \begin{itemize}
     \item For data parallelism: experiment with different batch sizes (explained below)
     \item For model parallelism: experiment with models on multi core vs single GPU vs multi GPU
   \end{itemize}
+  \item (Optional / Time Permits) Add \texttt{C++} implementation with \texttt{MPI} and add to above experiments
 \end{enumerate}
 
 \section*{Resources}
 
-Given that we want to explore the differences in axes of parallelism, we will try not to spend too much time implementing sequential neural networks from scratch. From the \texttt{C++} standpoint, there exists an abundance of starter code (e.g. [\href{https://github.com/Whiax/NeuralNetworkCpp/tree/master/src/neural}{1},\href{https://github.com/huangzehao/SimpleNeuralNetwork/blob/master/src/neural-net.cpp}{2},\href{https://github.com/arnobastenhof/mnist/tree/master/src}{3}]). For \texttt{Python}, we will rely upon the \texttt{PyTorch} documentation for commonly used neural networks (e.g. standard CNN or basic ResNet). \textit{The main coding portion (in \texttt{C++}) will come from translating a \texttt{C++} implementation of a neural network into an OpenMP version}. \\
+% From the \texttt{C++} standpoint, there exists an abundance of starter code (e.g. [\href{https://github.com/Whiax/NeuralNetworkCpp/tree/master/src/neural}{1},\href{https://github.com/huangzehao/SimpleNeuralNetwork/blob/master/src/neural-net.cpp}{2},\href{https://github.com/arnobastenhof/mnist/tree/master/src}{3}]).
+
+Given that we want to explore the differences in axes of parallelism, we will try not to spend too much time implementing sequential neural networks from scratch. For \texttt{Python}, we will rely upon the \texttt{PyTorch} documentation for commonly used neural networks (e.g. standard CNN or basic ResNet). \textit{The main coding portion (in} \texttt{Python + mpi4py}) \textit{will come from incorporating message passing into a} \texttt{PyTorch} \textit{based model}. \\
 
 Additionally, there is a very interesting article from folks at Google Research\footnote{\href{https://ai.googleblog.com/2019/03/measuring-limits-of-data-parallel.html}{Measuring the Limits of Data Parallel Training for Neural Networks}} which describes the various scaling patterns that they observed during data parallelism. Note that their measurement of data parallelism is directly related to the batch size, which is the number of training data examples utilized in one iteration of training the model. Specifically, they discovered three distinct but related so-called ``scaling-regimes":
 \begin{enumerate}
@@ -86,7 +91,7 @@ Additionally, there is a very interesting article from folks at Google Research\
   \item Maximal Data Parallelism: further increasing batch size beyond this point doesn’t reduce training time
 \end{enumerate}
 
-We will attempt to see if this pattern can also be observed with our model and comment on any differences. Note that this will only be possible for the \texttt{Python} models due to the features provided by \texttt{PyTorch}\\
+We will attempt to see if this pattern can also be observed with our model and comment on any differences. \\
 
 \noindent Finally, regarding the computing resources required for our project, we will use the following:
 
@@ -98,9 +103,9 @@ We will attempt to see if this pattern can also be observed with our model and c
 
 \section*{Goals and Deliverables}
 
-\paragraph{PLAN TO ACHIEVE} A successful project would entail a comparison between data and model parallelism with respect to speedup as well as performance. This would involve having a working implementation of our models in \texttt{C++} with and without \texttt{OpenMP} to be able to comment on performance and speedup in a shared memory setting. Then, we shift to our \texttt{Python} models and have measurements of speedup with respect to both data and model parallelism. For an example of a specific metric we may want to look out for, we will see if we can achieve the result that doubling batch size (so in the data parallel setting) halves the training time.
+\paragraph{PLAN TO ACHIEVE} A successful project would entail a comparison between data and model parallelism with respect to speedup as well as performance. This would involve having a working implementation of our models in \texttt{PyTorch} as well as using \texttt{mpi4py} to be able to comment on performance and speedup in a message passing paradigm. With these models, we will have measurements of speedup with respect to both data and model parallelism. For an example of a specific metric we may want to look out for, we will see if we can achieve the result that doubling batch size (so in the data parallel setting) halves the training time.
 
-\paragraph{HOPE TO ACHIEVE} If everything is going very well and we are able to get all of these measurements, we will experiment with also adding a message-passing model (via \texttt{mpi4py} in \texttt{Python}) to our set of models.
+\paragraph{HOPE TO ACHIEVE} If everything is going very well and we are able to get all of these measurements, we will experiment with also adding other types of neural network architectures (e.g. \texttt{ResNet}) as well as possibly trying to implement the simple network in \texttt{C++} with and without \texttt{MPI}.
 
 \paragraph{75\%} If everything is going slower than intended, then we will pick only one of data or model parallelism to proceed forward with, depedending on what seems more suitable given our resource and time constraints.
 
@@ -113,7 +118,7 @@ We will attempt to see if this pattern can also be observed with our model and c
   \item Comment on the effectiveness of data and/or model parallelism in the example of a reasonably complex data and model setting
 \end{itemize}
 
-\section*{Platform Choice} Given that the majority of this class is focused on \texttt{C++}, we want to be able to use it (along with \texttt{OpenMP}) as a starting point. We also think it would be interesting to see a neural network within the shared memory context. However, after this initial part (ideally before or right up to the milestone report checkpoint), we will fully transition to \texttt{Python}, taking full advantage of the capabilities of \texttt{PyTorch} as a deep learning framework. \\
+\section*{Platform Choice} Given that the majority of this class is focused on parallelism, we want to incorporate one of the main kinds of parallel settings that we have talked about. Specifically, in the context of neural network training, it makes sense to use message passing where we can distribute the training across processors. We will have each processor train a copy of the network and then send back the updated weights. Then, we average the weights together continue with validation and testing.
 
 As for compute resources, we will be using a combination of AWS EC2, PSC-Bridges 2, GHC cluster machines, and potentially other high core machines from professors to be able to satisfy our different requirements.
 
@@ -124,15 +129,15 @@ As for compute resources, we will be using a combination of AWS EC2, PSC-Bridges
 		\hline
 		Week & Goals \\
 		\hline
-		3/21 - 3/28 & Project proposal and start working on \texttt{C++} implementation \\
+		3/21 - 3/28 & Project proposal and start working on \texttt{PyTorch} implementation of basic network \\
 		\hline
-		3/28 - 4/4 & Finish the \texttt{C++} and start translating to \texttt{OpenMP} implementation\\
+		3/28 - 4/4 & Finish the \texttt{PyTorch} basic model and start translating to \texttt{MPI} implementation\\
 		\hline
-		4/4 - 4/11 & Finish the shared memory implementation + Milestone Report and start data parallelism in \texttt{Python} \\
+		4/4 - 4/11 & Finish the \texttt{MPI} implementation + Milestone Report and start data parallelism in \texttt{Python} \\
 		\hline
 		4/11 - 4/18 & Finish Data Parallelism and start working on Model Parallelism\\
 		\hline
-		4/18 - 4/25 & Finish Model Parallelism and start collecting performance metrics, potentially also work on \texttt{MPI} version\\
+		4/18 - 4/25 & Finish Model Parallelism + start collecting performance metrics, maybe work on \texttt{ResNet} model architecture\\
 		\hline
 		4/25 - 4/29 & Finish Final Report\\
 		\hline
