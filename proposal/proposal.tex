@@ -70,7 +70,7 @@ To make this more concrete, here is the high level sequence of our project:
   \item Implement a basic feed forward model in \texttt{PyTorch} to serve as a reference for speedup and general performance
   \item Implement a message-passing model with convolutional neural net base in \texttt{mpi4py}
   \item (Optional / Time Permits) Add additional \texttt{PyTorch} models with varying architectures (e.g. \texttt{ResNet})
-  \item Start experiments and comparing both basic and complicated models via data and model parallelism
+  \item Start experiments comparing both basic and complicated models via data and model parallelism
   \begin{itemize}
     \item For data parallelism: experiment with different batch sizes (explained below)
     \item For model parallelism: experiment with models on multi core vs single GPU vs multi GPU
@@ -131,7 +131,7 @@ As for compute resources, we will be using a combination of AWS EC2, PSC-Bridges
 		\hline
 		3/21 - 3/28 & Project proposal and start working on \texttt{PyTorch} implementation of basic network \\
 		\hline
-		3/28 - 4/4 & Finish the \texttt{PyTorch} basic model and start translating to \texttt{MPI} implementation\\
+		3/28 - 4/4 & Finish the \texttt{PyTorch} basic model and start translating to \texttt{mpi4py} implementation\\
 		\hline
 		4/4 - 4/11 & Finish the \texttt{MPI} implementation + Milestone Report and start data parallelism in \texttt{Python} \\
 		\hline
