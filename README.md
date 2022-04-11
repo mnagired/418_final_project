@@ -246,16 +246,18 @@ We note that our proposal changed immediately following our proposal feedback. W
 
 Thus, the remaining unknowns are simply to begin experiments in various dimensions (single/multi CPU/GPU machines). We will update this document if we experience any other issues or obstacles and explain how we adjusted accordingly.
 
-# Schedule
+# Schedule (modified to half-week increments after milestone deadline)
 
 | Week      | Goals |
 | ----------- | ----------- |
 | 3/21 - 3/28 | Project proposal and start working on `PyTorch` implementation of basic network       |
 | 3/28 - 4/04 | Finish the `PyTorch` basic model and start translating to `mpi4py` implementation        |
 | 4/04 - 4/11 | Finish the `mpi4py` implementation + Milestone Report and start data parallelism in Python        |
-| 4/11 - 4/18 | Finish Data Parallelism and start working on Model Parallelism        |
-| 4/18 - 4/25 | Finish Model Parallelism + start collecting performance metrics, maybe work on `ResNet` model architecture        |
-| 4/25 - 4/29 | Finish Final Report         |
+| 4/11 - 4/14 | Start experiments for Data Parallelism (both), Exam 2 Week        |
+| 4/14 - 4/18 | Continue optimizing `MPI` version (Ziad) + Continue experiments (Manish)        |
+| 4/18 - 4/22 | Incorporate `MPI` into `ResNet` (Ziad) + Start Model Parallelism (Manish)      |
+| 4/22 - 4/25 | Finish `MPI` + `ResNet` (Ziad) + continue collecting performance metrics (both)       |
+| 4/25 - 4/29 | Finish Final Report (both)         |
 
 [^1]: [Data Parallelism VS Model Parallelism in Distributed Deep
     Learning Training - Lei Mao's Log
