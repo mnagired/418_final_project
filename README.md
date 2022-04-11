@@ -81,7 +81,7 @@ preprocessing of the input data.
 
 Then, we're able to focus the "unknown\" aspects of our project to be
 the axes of parallelism and their corresponding performance or speedups.
-Specifically, once we have a baseline performance in a shared memory
+Specifically, once we have a baseline performance in a message passing
 setting, we can transition and aim to look at the difference between
 data and model parallelism, as well as the specific differences within
 data parallelism (e.g. multi core vs single GPU vs multi GPU).
@@ -202,6 +202,50 @@ As for compute resources, we will be using a combination of AWS EC2,
 PSC-Bridges 2, GHC cluster machines, and potentially other high core
 machines from professors to be able to satisfy our different
 requirements.
+
+# Milestone
+
+## Brief Summary of Work
+
+Up until now, as outlined above in our high level project sequence (in "The Challenge" section), we have been working on the implementations of various neural networks. We have successfully completed the implementation of three different models:
+
+1. A basic 2-layer feed-forward neural network (to serve as the baseline model)
+2. A convolutional neural network (CNN) with 2 convolutional layers
+3. The same CNN as above but also using `mpi4py` (an `MPI` package for `Python`)
+
+Note that, as we indicated earlier in the proposal, we want to limit the amount of discrepancies between the models themselves so as to ensure proper comparisons. 
+
+Specifically, this means that all models have the same:
+- loss criterion: `CrossEntropyLoss`
+- optimizer: `SGD` (Stochastic Gradient Descent)
+- learning rate: varies from 0.001 to 10
+- training epochs: varies from 1 to 10
+- batch size: varies from 10 to 1024
+
+So, we were able to implement the above 3 models successfully and also figure out the setup for how we will collect results (e.g. time per epoch, training/testing accuracy/loss, etc.)
+
+## Update on Goals and Deliverables + Poster Session
+
+With respect to our stated goals, we are on schedule with our current workload. We have successfully implemented the baseline models, as well as gotten a taste of how `mpi4py` works. We are on pace to meet our "Plan to Achieve" deliverables. So, our updated list goals for the poster session remains to have *results on both model and data parallelism*
+
+At the poster session, we plan to show graphs on how well each type of model responds to different axes of parallelism (e.g. model vs data) as well as potentially how robust these results are to different hyperparameters (e.g. learning rate, choice of optimizer, etc.)
+
+## Preliminary Results
+
+Although we focused on implementation of the baseline models as well as getting acquainted with the `MPI` client for `Python`, we were able to get some rough estimates of the various metrics that we want to collect.
+
+For example, assuming a learning rate of 10, batch size of 128, and training for 1 epoch:
+- Baseline Model: train time 3.9998s, train loss 2.0024, train accuracy 23.31%
+- CNN without MPI: train time 14.9429s, train loss 2.3394, train accuracy 10.26%
+- CNN with MPI: train time 16.5879s, train loss 2.3614, train accuracy 11.36%
+
+Note that the above results are just a sample of the kinds of metrics we will be looking to gather. Think of these numbers as a *single point* on a graph where the categorization (e.g. train accuracy, train time) will be on the y-axis and the x-axis will have different hyperparameter values (e.g. over number of epochs, changes in batch size, etc)
+
+## Potential Issues
+
+We note that our proposal changed immediately following our proposal feedback. We decided to drop the `C++` and `OpenMP` implementation entirely, as it wasn't totally clear how we could stand to benefit from parallelism in this way. Then, we changed our project to have the core of the parallelism implementation have to do with `mpi4py` since we were able to more easily justify how message passing can be leveraged in neural network training (see the first paragraph of the "Platform Choice" section for more).
+
+Thus, the remaining unknowns are simply to begin experiments in various dimensions (single/multi CPU/GPU machines). We will update this document if we experience any other issues or obstacles and explain how we adjusted accordingly.
 
 # Schedule
 
