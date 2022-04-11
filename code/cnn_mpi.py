@@ -82,7 +82,7 @@ class Worker(object):
     def run(self, args):
         self.mnist_data.build(True, args.batch_size)
         self.optimizer = torch.optim.SGD(
-            self.model.parameters(), lr=args.lr, momentum=0.9)
+            self.model.parameters(), lr=args.lr)
 
         self.model.to(device)
 
