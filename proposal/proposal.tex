@@ -62,7 +62,7 @@ The main challenge stems from the fact that there exist a lot of dependencies wh
 
 Given that we want to focus on parallelism, we do \textit{not} want to get caught up in trying out different models on different datasets with different parameters. Thus, we will fix our dataset to be the widely well-known benchmark MNIST\footnote{\href{http://yann.lecun.com/exdb/mnist/}{Link to MNIST Data}} dataset. This also restricts us to the problem of image classification, which further restricts the class of neural networks that we will be looking at (e.g. now we can focus on simple feed forward networks and basic convolutional neural networks or CNNs). From background research, this dataset is known to be relatively cheap to train and still have nontrivial results without excessive preprocessing of the input data.\\
 
-Then, we're able to focus the ``unknown" aspects of our project to be the axes of parallelism and their corresponding performance or speedups. Specifically, once we have a baseline performance in a shared memory setting, we can transition and aim to look at the difference between data and model parallelism, as well as the specific differences within data parallelism (e.g. multi core vs single GPU vs multi GPU). \\
+Then, we're able to focus the ``unknown" aspects of our project to be the axes of parallelism and their corresponding performance or speedups. Specifically, once we have a baseline performance in a message passing setting, we can transition and aim to look at the difference between data and model parallelism, as well as the specific differences within data parallelism (e.g. multi core vs single GPU vs multi GPU). \\
 
 To make this more concrete, here is the high level sequence of our project:
 
@@ -114,7 +114,7 @@ We will attempt to see if this pattern can also be observed with our model and c
 \paragraph{Learning Objectives} Our learning objectives are as follows:
 
 \begin{itemize}
-  \item Think about the inherent dependencies within a deep learning pipeline when attempting to implement a neural network via shared memory
+  \item Think about the inherent dependencies within a deep learning pipeline when attempting to implement a neural network via message passing
   \item Comment on the effectiveness of data and/or model parallelism in the example of a reasonably complex data and model setting
 \end{itemize}
 

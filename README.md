@@ -53,7 +53,7 @@ and model parallelism.
 
 ![image](background.png)
 
-# The Challenge 
+# The Challenge
 
 The main challenge stems from the fact that there exist a lot of
 dependencies when working with a neural network. At the lowest,
@@ -102,10 +102,10 @@ project:
 
     -   For model parallelism: experiment with models on multi core vs
         single GPU vs multi GPU
-        
+
 5. (Optional / Time Permits) Add `C++` implementation with `MPI` and add to above experiments
 
-  
+
 
 # Resources
 
@@ -185,8 +185,7 @@ will also definitely show our speedup and performance graphs.
 Our learning objectives are as follows:
 
 -   Think about the inherent dependencies within a deep learning
-    pipeline when attempting to implement a neural network via shared
-    memory
+    pipeline when attempting to implement a neural network via message passing
 
 -   Comment on the effectiveness of data and/or model parallelism in the
     example of a reasonably complex data and model setting
@@ -213,7 +212,7 @@ Up until now, as outlined above in our high level project sequence (in "The Chal
 2. A convolutional neural network (CNN) with 2 convolutional layers
 3. The same CNN as above but also using `mpi4py` (an `MPI` package for `Python`)
 
-Note that, as we indicated earlier in the proposal, we want to limit the amount of discrepancies between the models themselves so as to ensure proper comparisons. 
+Note that, as we indicated earlier in the proposal, we want to limit the amount of discrepancies between the models themselves so as to ensure proper comparisons.
 
 Specifically, this means that all models have the same:
 - loss criterion: `CrossEntropyLoss`
