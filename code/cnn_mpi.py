@@ -8,6 +8,8 @@ import argparse
 import collections
 import time
 
+tfs = torchvision.transforms.ToTensor();
+
 ##################### DataLoader #####################
 
 class DataMNIST(object):
@@ -15,9 +17,8 @@ class DataMNIST(object):
         super(DataMNIST, self).__init__()
 
     def dataset(self, train):
-        transform = torchvision.transforms.ToTensor()
         return torchvision.datasets.MNIST(
-            "./", train=train, download=True, transform=transform)
+            "./", train=train, download=True, transform=tfs)
 
     def build(self, train, batch_size):
         self.loader = torch.utils.data.DataLoader(
@@ -139,7 +140,7 @@ def is_root(rank):
 
 device = torch.device('cpu' if not torch.cuda.is_available() else 'cuda')
 
-def train(args):
+def eval(args):
     """Schedule a distributed training job."""
 
     rank = MPI.COMM_WORLD.Get_rank()
@@ -158,12 +159,30 @@ def train(args):
             root.run(args)
             end = time.time()
             print(f'Total Time for Epoch {i + 1}: {end - start:.4f}s')
+
+            #### TESTING ####
+            test_data = torchvision.datasets.MNIST(root='./data', train=False, transform=tfs, download = True)
+            test_loader = torch.utils.data.DataLoader(dataset=test_data, batch_size=args.batch_size, shuffle=False)
+
+            test_loss, test_acc = [], []
+            for data,labels in test_loader:
+                # optimization is to not use gradients (bc we don't need it for evaluation)
+                with torch.no_grad():
+                    data, labels = data.to(device), labels.to(device)
+
+                    outputs = root.model(data)
+                    loss = root.loss(outputs, labels)
+
+                    test_loss += [loss.item()]
+                    test_acc += [(outputs.argmax(dim=1).cpu().numpy() == labels.cpu().numpy()).mean()]
+
+            print(f'Test Accuracy: {np.mean(test_acc):.4f}, Test Loss: {np.mean(test_loss):.4f}')
+
     else:
         for _ in range(epochs):
             worker = Worker(MPI.COMM_WORLD, rank, size)
             worker.model.load_state_dict(MPI.COMM_WORLD.recv())
             worker.run(args)
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Train CNN on MNIST with MPI")
@@ -171,14 +190,8 @@ if __name__ == '__main__':
                         help="Learning Rate. [default 10]")
     parser.add_argument("--batch_size", dest="batch_size", default=128,
                         help="Batch Size. [default 128]")
-    parser.add_argument("--nepochs", dest="nepochs", default=2,
-                        help="Number of Epochs. [default 2]")
+    parser.add_argument("--nepochs", dest="nepochs", default=1,
+                        help="Number of Epochs. [default 1]")
     args = parser.parse_args()
 
-    start = time.time()
-
-    train(args)
-
-    end = time.time()
-
-    # print(f'Total Time: {end - start:.4f}s')
+    eval(args)

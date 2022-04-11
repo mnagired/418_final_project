@@ -52,7 +52,7 @@ optim = torch.optim.SGD(model.parameters(), lr=10)
 
 ##################### MODEL TRAINING #####################
 
-epochs = 2 #2
+epochs = 1 #2
 for epoch in range(epochs):
     start = time.time()
     train_loss, train_acc = [], []
