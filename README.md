@@ -95,13 +95,10 @@ project:
 
 3. (Optional / Time Permits) Add additional `PyTorch` models with varying architectures (e.g. `ResNet`)
 
-4. Start experiments comparing both basic and complicated models via data and model parallelism
+4. Start experiments comparing both basic and complicated models via data parallelism
 
     -   For data parallelism: experiment with different batch sizes
         (explained below)
-
-    -   For model parallelism: experiment with models on multi core vs
-        single GPU vs multi GPU
 
 5. (Optional / Time Permits) Add `C++` implementation with `MPI` and add to above experiments
 
@@ -156,7 +153,7 @@ will use the following:
 
 A successful project would entail a comparison between data and model parallelism with respect to speedup as well as performance. This would involve
 having a working implementation of our models in `PyTorch` as well as using `mpi4py` to be able to comment on performance and speedup in a message
-passing paradigm. With these models, we will have measurements of speedup with respect to both data and model parallelism. For an example of a specific
+passing paradigm. With these models, we will have measurements of speedup with respect to data parallelism. For an example of a specific
 metric we may want to look out for, we will see if we can achieve the result that doubling batch size (so in the data parallel setting) halves the
 training time.
 
@@ -187,7 +184,7 @@ Our learning objectives are as follows:
 -   Think about the inherent dependencies within a deep learning
     pipeline when attempting to implement a neural network via message passing
 
--   Comment on the effectiveness of data and/or model parallelism in the
+-   Comment on the effectiveness of data parallelism in the
     example of a reasonably complex data and model setting
 
 # Platform Choice
@@ -246,6 +243,18 @@ We note that our proposal changed immediately following our proposal feedback. W
 
 Thus, the remaining unknowns are simply to begin experiments in various dimensions (single/multi CPU/GPU machines). We will update this document if we experience any other issues or obstacles and explain how we adjusted accordingly.
 
+# 4/17 Update
+
+## Modified Goals + Rationale
+
+After looking into model parallelism briefly, we have decided that the implementation needed is not rigorous enough to justify the time spent attempting to gather the resources to test model parallel workflows. Specifically, given `PyTorch`, the way to implement model parallelism would be to send different layers of a network architecture to different machines (e.g. different GPUs). Then, in order to test this model, we would have to secure multi-GPU machines, which would take more work than the actual implementation of model parallelism itself.
+
+Therefore, to account for this change, we will be looking to implement our message-passing based parallelism on a more sophisticated neural network architecture, such as `ResNet`. More concretely, given that the internal architecture of `ResNet` is inherently more complicated than a 2-layer CNN (which we have already achieved), we anticipate that attempting to integrate message passing (again via `mpi4py`) will be more complicated with respect to implementation. Additionally, we will be able to compare the effectiveness of message passing effects on baseline models vs. on more complicated architectures. This added dimension of comparision, as well as the increase in complexity of implementation, allows us to justify the change in plans.
+
+## Updated Deliverables
+
+In addition to the deliverables above, we will seek to fully test out data parallelism (e.g. varying batch size) on each of our models (baseline feedforward, baseline cnn, cnn + mpi, baseline resnet, resnet + mpi) and comment on the patterns that we see. We will also include discussion regarding our achieved speedup via `mpi` and what factors limited us from obtaining perfect speedup.
+
 # Schedule (modified to half-week increments after milestone deadline)
 
 | Week      | Goals |
@@ -255,7 +264,7 @@ Thus, the remaining unknowns are simply to begin experiments in various dimensio
 | 4/04 - 4/11 | Finish the `mpi4py` implementation + Milestone Report and start data parallelism in Python        |
 | 4/11 - 4/14 | Start experiments for Data Parallelism (both), Exam 2 Week        |
 | 4/14 - 4/18 | Continue optimizing `MPI` version (Ziad) + Continue experiments (Manish)        |
-| 4/18 - 4/22 | Incorporate `MPI` into `ResNet` (Ziad) + Start Model Parallelism (Manish)      |
+| 4/18 - 4/22 | Incorporate `MPI` into `ResNet` (Ziad) + Continue Experiments (Manish)      |
 | 4/22 - 4/25 | Finish `MPI` + `ResNet` (Ziad) + continue collecting performance metrics (both)       |
 | 4/25 - 4/29 | Finish Final Report (both)         |
 
