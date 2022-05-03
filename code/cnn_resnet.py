@@ -67,7 +67,7 @@ class Worker(object):
         self.model.train()
 
         for (i, (x, y)) in enumerate(self.mnist_data.loader):
-            if i % 10 == 0: print('Worker Batch:', i)
+            # if i % 10 == 0: print('Worker Batch:', i)
             # print(">>> Iterating on worker {}".format(self.rank))
             self.iteration(x, y)
 
@@ -89,7 +89,7 @@ class Root(object):
     def mean_loss(self):
         val_losses = []
         for (i, (x, y)) in enumerate(self.mnist_data.loader):
-            if i % 10 == 0: print('Master Batch:', i)
+            # if i % 10 == 0: print('Master Batch:', i)
             val_losses.append(self.loss(self.model(x), y).item())
         return np.mean(val_losses)
 
