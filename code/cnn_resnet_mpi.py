@@ -63,7 +63,7 @@ class Worker(object):
 
     def run(self, args):
         print(">>> Beginning training on worker {}".format(self.rank))
-        self.mnist_data.build(True, args.batch_size)
+        self.mnist_data.build(True, int(args.batch_size))
         self.model.train()
 
         for (i, (x, y)) in enumerate(self.mnist_data.loader):
