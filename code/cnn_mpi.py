@@ -22,7 +22,7 @@ class DataMNIST(object):
 
     def build(self, train, batch_size):
         self.loader = torch.utils.data.DataLoader(
-            self.dataset(train), shuffle=True, num_workers=0, batch_size=batch_size)
+            self.dataset(train), shuffle=True, num_workers=0, batch_size=int(args.batch_size)
 
 class ClassifyMNISTConv(torch.nn.Module):
     def __init__(self):
@@ -81,9 +81,9 @@ class Worker(object):
         self.optimizer.step()
 
     def run(self, args):
-        self.mnist_data.build(True, args.batch_size)
+        self.mnist_data.build(True, int(args.batch_size))
         self.optimizer = torch.optim.SGD(
-            self.model.parameters(), lr=args.lr)
+            self.model.parameters(), lr=float(args.lr))
 
         self.model.to(device)
 
@@ -114,7 +114,7 @@ class Root(object):
         return np.mean(val_losses)
 
     def run(self, args):
-        self.mnist_data.build(False, args.batch_size)
+        self.mnist_data.build(False, int(args.batch_size))
 
         print(">>> Receiving state dicts from workers")
         state_dicts = [self.comm.recv() for _ in range(self.size - 1)]
@@ -162,7 +162,7 @@ def eval(args):
 
             #### TESTING ####
             test_data = torchvision.datasets.MNIST(root='./data', train=False, transform=tfs, download = True)
-            test_loader = torch.utils.data.DataLoader(dataset=test_data, batch_size=args.batch_size, shuffle=False)
+            test_loader = torch.utils.data.DataLoader(dataset=test_data, batch_size=int(args.batch_size), shuffle=False)
 
             test_loss, test_acc = [], []
             for data,labels in test_loader:

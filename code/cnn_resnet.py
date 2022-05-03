@@ -36,7 +36,7 @@ class DataMNIST(object):
             self.dataset(train),
             shuffle=True,
             num_workers=0,
-            batch_size=batch_size
+            batch_size=int(args.batch_size)
         )
 
 
@@ -46,7 +46,7 @@ class Worker(object):
         self.model = MNISTResNet18()
         self.mnist_data = DataMNIST()
         self.loss = torch.nn.CrossEntropyLoss()
-        self.optimizer = torch.optim.Adam(self.model.parameters(), lr=0.001)
+        self.optimizer = torch.optim.Adam(self.model.parameters(), lr=float(args.lr))
 
         self.comm = comm
         self.rank = rank
@@ -145,7 +145,7 @@ def train(args):
         #### TESTING ####
         tfs = torchvision.transforms.ToTensor()
         test_data = torchvision.datasets.MNIST(root='./data', train=False, transform=tfs, download = True)
-        test_loader = torch.utils.data.DataLoader(dataset=test_data, batch_size=args.batch_size, shuffle=False)
+        test_loader = torch.utils.data.DataLoader(dataset=test_data, batch_size=int(args.batch_size), shuffle=False)
 
         test_loss, test_acc = [], []
         for data,labels in test_loader:
