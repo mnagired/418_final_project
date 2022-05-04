@@ -1,5 +1,5 @@
 # Fdb version 3
-["pdflatex"] 1649714302 "proposal.tex" "proposal.pdf" "proposal" 1649714303
+["pdflatex"] 1649714302 "proposal.tex" "proposal.pdf" "proposal" 1651625786
   "/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc" 1136849721 2971 def0b6c1f0b107b3b936def894055589 ""
   "/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1136849721 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "/usr/local/texlive/2020/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -92,9 +92,9 @@
   "background.png" 1647876363 82057 d935fae4c561d042eebb402a9e22d6f7 ""
   "proposal.aux" 1649714303 1161 2585b3e1ba77af610eb6af4569f15531 "pdflatex"
   "proposal.out" 1649714303 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
-  "proposal.tex" 1649714302 11929 b0fe7ac4b5516518445fa8ae65f87540 ""
+  "proposal.tex" 1651625786 11929 b0fe7ac4b5516518445fa8ae65f87540 ""
   (generated)
-  "proposal.out"
-  "proposal.pdf"
   "proposal.aux"
+  "proposal.pdf"
   "proposal.log"
+  "proposal.out"
