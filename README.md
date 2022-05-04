@@ -1,7 +1,7 @@
 # 15-418 Final Project
 **Manish Nagireddy (mnagired) and Ziad Khattab (zkhattab)**
 
-Please take a look at our [Final Report](report.pdf)!
+Please take a look at our [Final Report](report.pdf) and our [Video Summary](https://youtu.be/Nv8kCS1lNFs)!
 
 # Title
 
