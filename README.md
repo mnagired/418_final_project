@@ -1,5 +1,7 @@
-# 15-418 Final Project Proposal
+# 15-418 Final Project
 **Manish Nagireddy (mnagired) and Ziad Khattab (zkhattab)**
+
+Please take a look at our [Final Report](report.pdf)!
 
 # Title
 
