@@ -22,7 +22,7 @@ class DataMNIST(object):
 
     def build(self, train, batch_size):
         self.loader = torch.utils.data.DataLoader(
-            self.dataset(train), shuffle=True, num_workers=0, batch_size=int(args.batch_size)
+            self.dataset(train), shuffle=True, num_workers=0, batch_size=int(args.batch_size))
 
 class ClassifyMNISTConv(torch.nn.Module):
     def __init__(self):
