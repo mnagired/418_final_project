@@ -4,6 +4,7 @@ import torchvision
 import matplotlib.pyplot as plt
 import numpy as np
 import argparse
+import time
 
 parser = argparse.ArgumentParser(
     description="Train MNIST network across multiple distributed processes.")
@@ -62,6 +63,7 @@ optim = torch.optim.SGD(model.parameters(), lr=float(args.lr))
 
 # epochs = 2 #2
 for epoch in range(int(args.nepochs)):
+    start = time.time()
     train_loss, train_acc = [], []
     for i, (data, labels) in enumerate(train_loader):
 
@@ -85,6 +87,9 @@ for epoch in range(int(args.nepochs)):
         if i == 0: print("Epoch", epoch+1)
         if (i+1) % 100 == 0:
             print(f'Train Accuracy: {np.mean(train_acc):.4f}, Train Loss: {np.mean(train_loss):.4f}')
+
+    end = time.time()
+    print(f'Total Time for Epoch {epoch + 1}: {end - start:.4f}s')
 
 
 ##################### MODEL TESTING #####################
