@@ -1,8 +1,3 @@
-::: center
-15-418 Final Project Report\
-**Manish Nagireddy (mnagired) and Ziad Khattab (zkhattab)**\
-:::
-
 # Title {#title .unnumbered}
 
 An Exploration of Parallelism in Neural Networks
