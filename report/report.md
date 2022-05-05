@@ -19,6 +19,10 @@ size is far more robust (as well as more effective) than attempting to
 map neural network training to either a shared memory or message passing
 setting.
 
+# Note
+
+Below, we have our entire final report and findings. 
+
 # Background
 
 In recent years, we have seen the rapid increase of neural networks
@@ -161,7 +165,7 @@ to achieve a successful implementation with decent speedup after
 thinking carefully about synchronization. We elaborate more on our
 approach below and on our results further below.
 
-# Approach {#approach .unnumbered}
+# Approach
 
 Our approach, in a broad sense, was data-side parallelization of the
 neural network training process. We did this by partitioning the data
@@ -257,7 +261,7 @@ knowledge of shared memory via `OpenMP`.
 
 ## Related Work
 
-![image](google.png)
+![image](report/google.png)
 
 Before we get into our specific results, we'd like to note that there is
 a very interesting article from folks at Google Research[^5] which
@@ -322,7 +326,7 @@ Research "scaling regimes\" (i.e. perfect scaling, diminishing returns,
 and maximal data parallelism) held true even after we incorporated
 message passing.
 
-![image](base_time_bs.png) ![image](base_acc_bs.png)
+![image](report/base_time_bs.png) ![image](report/base_acc_bs.png)
 
 #### Baseline Models
 
@@ -333,8 +337,7 @@ Then, our second baseline model is a convolutional neural network (CNN)
 with 2 convolutional layers (referred to as our baseline CNN in the
 figures).
 
-Now, look to Figure [\[fig:base_bs\]](#fig:base_bs){reference-type="ref"
-reference="fig:base_bs"} for the plots of training time and accuracy
+Now, look to the figures above for the plots of training time and accuracy
 across varying batch sizes. Specifically, we point to the fact as we
 double the batch size from 32 to 64, we see *almost halving* the
 training time. This corresponds to the "perfect\" scaling regime from
@@ -355,7 +358,7 @@ batch size will lead to *poor generalization*\"[^7].
 
 #### Message Passing Model
 
-![image](cnn_mpi_bs_time.png) ![image](cnn_mpi_bs_acc.png)
+![image](report/cnn_mpi_bs_time.png) ![image](report/cnn_mpi_bs_acc.png)
 
 We modified our baseline CNN model to also integrate message passing
 (via the `mpi4py` package). As described above in our approach section,
@@ -365,8 +368,7 @@ master process utilizes a reductive combination process across all the
 weights trained by each worker processor to unify them into one updated
 weight matrix.
 
-Now, look to Figure [\[fig:cnn_bs\]](#fig:cnn_bs){reference-type="ref"
-reference="fig:cnn_bs"} for the plots of training time, speedup, and
+Now, look to the figures above for the plots of training time, speedup, and
 accuracy across varying batch sizes. Specifically, we see that the
 training time follows a similar trend as for the baseline models where
 going from batch size of 32 to 64 results in a larger decrease than
@@ -383,12 +385,9 @@ physical training times needed by the message passing model. Observe
 that even for the simplest message passing model (which only uses 1
 worker process), the need to send a single message results in over 18
 seconds to train 1 epoch with a batch size of 64 (visually, this is the
-second blue dot on the left plot in Figure
-[\[fig:cnn_bs\]](#fig:cnn_bs){reference-type="ref"
-reference="fig:cnn_bs"}). For reference, the baseline cnn model was able
+second blue dot on the first plot the figures above. For reference, the baseline cnn model was able
 to train in almost 5 fewer seconds (given by the second blue dot on the
-left plot in Figure [\[fig:base_bs\]](#fig:base_bs){reference-type="ref"
-reference="fig:base_bs"}). So, what we observe is that the overhead of
+first plot in the figures under "Baseline Models"). So, what we observe is that the overhead of
 message passing is large enough to diminish the reduction in time after
 increasing batch size, but not enough so as to completely eradicate the
 effect of doubling batch size.
@@ -408,7 +407,7 @@ stated above.
 ### Varying Learning Rate
 
 ![Explanation of learning rate size on neural network
-convergence.](lr.png){#fig:lr}
+convergence.](report/lr.png)
 
 As an additional axis of comparison, we decided to hold batch size and
 number of training epochs constant (512 and 5 respectively) and vary the
@@ -419,31 +418,28 @@ whether varying the number of processors (for message passing) or the
 number of threads (for shared memory) resulted in different accuracies
 or training times due to the size of the learning rate. For reference on
 what learning rate means in the context of the deep learning pipeline,
-refer to Figure [1](#fig:lr){reference-type="ref" reference="fig:lr"}.
+refer the figure above.
 
 ![Plot of accuracy (after 5 epochs of training) with varying learning
 rates for both baseline MLP and baseline CNN models. Note, there is *no*
 message passing in either of these models, as they are our reference
-points.](base_acc.png){#fig:base_lr}
+points.](report/base_acc.png){#fig:base_lr}
 
 #### Baseline Models
 
 Since the baseline models don't have any explicit parallelization, it
 doesn't make sense to collect their training times for varying learning
-rates. Instead, we look at their testing accuracies (Figure
-[2](#fig:base_lr){reference-type="ref" reference="fig:base_lr"}) and
+rates. Instead, we look at their testing accuracies (see the figure above) and
 find that a learning rate of 0.01 appears to be the most optimal,
 because it resulted in the best training accuracy, which means the model
 with the highest predictive power.
 
 #### Message Passing Models
 
-![image](cnn_mpi_lr_time.png) ![image](cnn_mpi_lr_speed.png)
+![image](report/cnn_mpi_lr_time.png) ![image](report/cnn_mpi_lr_speed.png)
 
 Now, we first display the results of experiments on the CNN model with
-message passing in Figure
-[\[fig:cnn_lr\]](#fig:cnn_lr){reference-type="ref"
-reference="fig:cnn_lr"}. From these plots, we can observe that the
+message passing in the figures above. From these plots, we can observe that the
 training time increases almost exponentially as we increase the number
 of processors. As stated before, this is largely due to the size of the
 messages that need to be sent.
@@ -454,21 +450,18 @@ though an extremely suboptimal learning rate might be bad for
 convergence, the time it takes to train the model is not dependent upon
 the learning rate, across differing numbers of processors.
 
-![image](res_lr_time.png) ![image](res_lr_speed.png)
+![image](report/res_lr_time.png) ![image](report/res_lr_speed.png)
 
-![`ResNet18` model architecture](res18.png){#fig:res18}
+![`ResNet18` model architecture](report/res18.png)
 
 Next, we first display the results of experiments on the more
-complicated `ResNet` model with message passing in Figure
-[\[fig:res_lr\]](#fig:res_lr){reference-type="ref"
-reference="fig:res_lr"}. From these plots, we can observe similar
+complicated `ResNet` model with message passing in the figures above. From these plots, we can observe similar
 patterns to the simpler CNN from above. However, paying close attention
 to the physical training time, we see that it takes over 5 *minutes* to
 train a single epoch of the `ResNet` model with message passing. This is
 due to the fact that the `ResNet` architecture is significantly more
 complicated, with many more convolutional and fully connected layers,
-than our original CNN model. Refer to Figure
-[3](#fig:res18){reference-type="ref" reference="fig:res18"} for a
+than our original CNN model. Refer to the above table for a
 tabular view of the model architecture[^8]. Hence, as can be expected,
 we observe much higher training times due to the fact that the updated
 weights of the models (which are the messages that are being sent) are
@@ -477,13 +470,12 @@ present of training a larger and deeper neural network which adds extra
 computation time.
 
 ![An example of PSC killing the job of training our `ResNet` model with
-MPI](kill_res.png){#fig:kill_res}
+MPI](report/kill_res.png)
 
 As you may observe, we do not provide any metrics beyond 32 processors,
 which is due to the fact that the PSC machines would automatically kill
 our jobs given the magnitude of time needed to complete the training of
-the network for higher processor counts. Refer to Figure
-[4](#fig:kill_res){reference-type="ref" reference="fig:kill_res"} for an
+the network for higher processor counts. Refer to the figure above for an
 example of the output we obtained.
 
 Nevertheless, we were able to observe that message passing does not work
@@ -492,11 +484,10 @@ architectures.
 
 #### Shared Memory
 
-![image](mp_lr_speed.png) ![image](mp_lr_acc.png)
+![image](report/mp_lr_speed.png) ![image](report/mp_lr_acc.png)
 
 There were a few patterns observed in the results gathered from the
-OpenMP experiments on the PSC machines. Refer to Figure
-[\[fig:mp_lr\]](#fig:mp_lr){reference-type="ref" reference="fig:mp_lr"}
+OpenMP experiments on the PSC machines. Refer to the figures above
 for the plots. Note that we managed to obtain near perfect speedup going
 from 1 processor to 4 processors, which we delve into below.
 
