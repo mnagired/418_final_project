@@ -261,7 +261,7 @@ knowledge of shared memory via `OpenMP`.
 
 ## Related Work
 
-![image](report/google.png)
+![image](google.png)
 
 Before we get into our specific results, we'd like to note that there is
 a very interesting article from folks at Google Research[^5] which
@@ -326,7 +326,7 @@ Research "scaling regimes\" (i.e. perfect scaling, diminishing returns,
 and maximal data parallelism) held true even after we incorporated
 message passing.
 
-![image](report/base_time_bs.png) ![image](report/base_acc_bs.png)
+![image](base_time_bs.png) ![image](base_acc_bs.png)
 
 #### Baseline Models
 
@@ -358,7 +358,7 @@ batch size will lead to *poor generalization*\"[^7].
 
 #### Message Passing Model
 
-![image](report/cnn_mpi_bs_time.png) ![image](report/cnn_mpi_bs_acc.png)
+![image](cnn_mpi_bs_time.png) ![image](cnn_mpi_bs_acc.png)
 
 We modified our baseline CNN model to also integrate message passing
 (via the `mpi4py` package). As described above in our approach section,
@@ -407,7 +407,7 @@ stated above.
 ### Varying Learning Rate
 
 ![Explanation of learning rate size on neural network
-convergence.](report/lr.png)
+convergence.](lr.png)
 
 As an additional axis of comparison, we decided to hold batch size and
 number of training epochs constant (512 and 5 respectively) and vary the
@@ -423,7 +423,7 @@ refer the figure above.
 ![Plot of accuracy (after 5 epochs of training) with varying learning
 rates for both baseline MLP and baseline CNN models. Note, there is *no*
 message passing in either of these models, as they are our reference
-points.](report/base_acc.png){#fig:base_lr}
+points.](base_acc.png){#fig:base_lr}
 
 #### Baseline Models
 
@@ -436,7 +436,7 @@ with the highest predictive power.
 
 #### Message Passing Models
 
-![image](report/cnn_mpi_lr_time.png) ![image](report/cnn_mpi_lr_speed.png)
+![image](cnn_mpi_lr_time.png) ![image](cnn_mpi_lr_speed.png)
 
 Now, we first display the results of experiments on the CNN model with
 message passing in the figures above. From these plots, we can observe that the
@@ -450,9 +450,9 @@ though an extremely suboptimal learning rate might be bad for
 convergence, the time it takes to train the model is not dependent upon
 the learning rate, across differing numbers of processors.
 
-![image](report/res_lr_time.png) ![image](report/res_lr_speed.png)
+![image](res_lr_time.png) ![image](res_lr_speed.png)
 
-![`ResNet18` model architecture](report/res18.png)
+![`ResNet18` model architecture](res18.png)
 
 Next, we first display the results of experiments on the more
 complicated `ResNet` model with message passing in the figures above. From these plots, we can observe similar
@@ -470,7 +470,7 @@ present of training a larger and deeper neural network which adds extra
 computation time.
 
 ![An example of PSC killing the job of training our `ResNet` model with
-MPI](report/kill_res.png)
+MPI](kill_res.png)
 
 As you may observe, we do not provide any metrics beyond 32 processors,
 which is due to the fact that the PSC machines would automatically kill
@@ -484,7 +484,7 @@ architectures.
 
 #### Shared Memory
 
-![image](report/mp_lr_speed.png) ![image](report/mp_lr_acc.png)
+![image](mp_lr_speed.png) ![image](mp_lr_acc.png)
 
 There were a few patterns observed in the results gathered from the
 OpenMP experiments on the PSC machines. Refer to the figures above
